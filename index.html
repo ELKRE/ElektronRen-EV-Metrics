@@ -83,7 +83,7 @@
             const [selectedModelName, setSelectedModelName] = useState(() => loadState('elektron_model', ""));
             const [dailyKm, setDailyKm] = useState(() => loadState('elektron_km', 40));
             const [daysPerWeek, setDaysPerWeek] = useState(() => loadState('elektron_days', 5));
-            const [costPerKwh, setCostPerKwh] = useState(() => loadState('elektron_cost', 3.0));
+            const [costPerKwh, setCostPerKwh] = useState(() => loadState('elektron_cost', 4.0));
             const [logoImage, setLogoImage] = useState(() => loadState('elektron_logo', null));
 
             // --- Efecto para Guardar Automáticamente ---
@@ -384,4 +384,5 @@
         root.render(<EvCalculator />);
     </script>
 </body>
+
 </html>

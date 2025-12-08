@@ -7,53 +7,21 @@
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Configuración Segura de Tailwind + Fallback CSS -->
     <script>
-        // Intentar configurar Tailwind si está disponible
-        try {
-            if (window.tailwind) {
-                tailwind.config = {
-                    theme: {
-                        extend: {
-                            colors: {
-                                elektron: {
-                                    green: '#7cbd2a', // Verde aproximado del logo
-                                    dark: '#1a1a1a',  // Fondo oscuro del logo
-                                    gray: '#4a4a4a',  // Gris de las letras "elektron"
-                                }
-                            }
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        elektron: {
+                            green: '#7cbd2a', // Verde aproximado del logo
+                            dark: '#1a1a1a',  // Fondo oscuro del logo
+                            gray: '#4a4a4a',  // Gris de las letras "elektron"
                         }
                     }
                 }
             }
-        } catch (e) {
-            console.warn('No se pudo configurar Tailwind dinámicamente, usando estilos fallback.');
         }
     </script>
-
-    <!-- Estilos de Respaldo (Por si falla la configuración dinámica) -->
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .transition-all-300 { transition: all 0.3s ease-in-out; }
-        
-        /* Fallbacks para colores personalizados Elektron */
-        .bg-elektron-green { background-color: #7cbd2a !important; }
-        .text-elektron-green { color: #7cbd2a !important; }
-        .border-elektron-green { border-color: #7cbd2a !important; }
-        .accent-elektron-green { accent-color: #7cbd2a !important; }
-        .focus\:ring-elektron-green:focus { --tw-ring-color: #7cbd2a !important; }
-        .focus\:border-elektron-green:focus { border-color: #7cbd2a !important; }
-        
-        .bg-elektron-dark { background-color: #1a1a1a !important; }
-        .text-elektron-dark { color: #1a1a1a !important; }
-        
-        .text-elektron-gray { color: #4a4a4a !important; }
-        
-        /* Utilidades extra */
-        .bg-elektron-green\/10 { background-color: rgba(124, 189, 42, 0.1) !important; }
-        .border-elektron-green\/20 { border-color: rgba(124, 189, 42, 0.2) !important; }
-    </style>
     
     <!-- React & ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
@@ -61,6 +29,12 @@
     
     <!-- Babel para JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        /* Animación suave para cambios */
+        .transition-all-300 { transition: all 0.3s ease-in-out; }
+    </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
 
@@ -69,131 +43,34 @@
     <script type="text/babel">
         const { useState, useMemo, useEffect, useRef } = React;
 
-        // --- Iconos SVG Personalizados ---
+        // --- Iconos SVG Personalizados (Estilo Minimalista) ---
         const Zap = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>;
         const Car = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>;
         const Settings = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>;
         const Upload = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>;
         const Leaf = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.77 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>;
-        const PiggyBank = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.6-1.5-1-2h0V5z"/><path d="M2 9v1c0 1.1.9 2 2 2h1"/><path d="M16 11h0"/></svg>;
 
         const EvCalculator = () => {
-            // --- Formato Moneda (MXN, sin decimales) ---
-            const formatCurrency = (amount) => {
-                return new Intl.NumberFormat('es-MX', {
-                    style: 'currency',
-                    currency: 'MXN',
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 0
-                }).format(amount);
-            };
-
-            // --- Base de Datos Actualizada: Informe México 2025 (V5) ---
+            // --- Base de Datos (Igual que antes) ---
             const carDatabase = [
-                // === BEV (Eléctricos Puros) ===
-                // Audi
-                { brand: "Audi", model: "Q8 e-tron 55", type: "BEV", battery: 114.0, range: 600, standard: "WLTP" },
-                { brand: "Audi", model: "Q6 e-tron", type: "BEV", battery: 100.0, range: 625, standard: "WLTP" },
-                { brand: "Audi", model: "e-tron GT", type: "BEV", battery: 93.4, range: 487, standard: "WLTP" },
-                // BMW
-                { brand: "BMW", model: "i4 eDrive40", type: "BEV", battery: 83.9, range: 590, standard: "WLTP" },
-                { brand: "BMW", model: "iX xDrive50", type: "BEV", battery: 111.5, range: 630, standard: "WLTP" },
-                { brand: "BMW", model: "iX1 xDrive30", type: "BEV", battery: 64.7, range: 440, standard: "WLTP" },
-                { brand: "BMW", model: "iX3", type: "BEV", battery: 80.0, range: 460, standard: "WLTP" },
-                // BYD
-                { brand: "BYD", model: "Dolphin Mini", type: "BEV", battery: 38.0, range: 380, standard: "NEDC" },
-                { brand: "BYD", model: "Dolphin", type: "BEV", battery: 44.9, range: 405, standard: "NEDC" },
-                { brand: "BYD", model: "Yuan Plus", type: "BEV", battery: 60.5, range: 480, standard: "NEDC" },
-                { brand: "BYD", model: "Yuan Pro", type: "BEV", battery: 45.1, range: 380, standard: "NEDC" },
-                { brand: "BYD", model: "Seal AWD", type: "BEV", battery: 82.5, range: 520, standard: "WLTP" },
-                { brand: "BYD", model: "Han EV", type: "BEV", battery: 85.4, range: 602, standard: "NEDC" },
-                { brand: "BYD", model: "Tang EV", type: "BEV", battery: 86.4, range: 505, standard: "NEDC" },
-                { brand: "BYD", model: "Sealion 7", type: "BEV", battery: 82.5, range: 456, standard: "WLTC" },
-                // Chevrolet
-                { brand: "Chevrolet", model: "Bolt EUV", type: "BEV", battery: 65.0, range: 398, standard: "EPA" },
-                { brand: "Chevrolet", model: "Equinox EV", type: "BEV", battery: 85.0, range: 513, standard: "EPA" },
-                { brand: "Chevrolet", model: "Blazer EV", type: "BEV", battery: 102.0, range: 515, standard: "EPA" },
-                { brand: "Chevrolet", model: "Silverado EV", type: "BEV", battery: 200.0, range: 640, standard: "EPA" },
-                // Ford
-                { brand: "Ford", model: "Mustang Mach-E GT", type: "BEV", battery: 91.0, range: 500, standard: "WLTP" },
-                { brand: "Ford", model: "E-Transit", type: "BEV", battery: 68.0, range: 256, standard: "WLTP" },
-                // GWM
-                { brand: "GWM", model: "Ora 03 Luxury", type: "BEV", battery: 63.1, range: 500, standard: "NEDC" },
-                // Hyundai
-                { brand: "Hyundai", model: "Ioniq 5", type: "BEV", battery: 84.0, range: 546, standard: "WLTP" },
-                // JAC
-                { brand: "JAC", model: "E10X", type: "BEV", battery: 31.4, range: 360, standard: "NEDC" },
-                { brand: "JAC", model: "E30X", type: "BEV", battery: 51.5, range: 405, standard: "NEDC" },
-                { brand: "JAC", model: "E J7", type: "BEV", battery: 50.1, range: 492, standard: "NEDC" },
-                // Kia
-                { brand: "Kia", model: "EV6 GT-Line", type: "BEV", battery: 77.4, range: 506, standard: "EPA" },
-                { brand: "Kia", model: "Niro EV", type: "BEV", battery: 64.8, range: 460, standard: "WLTP" },
-                // Lexus
-                { brand: "Lexus", model: "RZ 450e", type: "BEV", battery: 71.4, range: 470, standard: "WLTP" },
-                // Mercedes
-                { brand: "Mercedes", model: "EQA 250+", type: "BEV", battery: 70.5, range: 530, standard: "WLTP" },
-                { brand: "Mercedes", model: "EQB 350", type: "BEV", battery: 66.5, range: 423, standard: "WLTP" },
-                { brand: "Mercedes", model: "EQE 350+", type: "BEV", battery: 90.6, range: 660, standard: "WLTP" },
-                { brand: "Mercedes", model: "EQS 580", type: "BEV", battery: 107.8, range: 780, standard: "WLTP" },
-                // MG
-                { brand: "MG", model: "MG4 Extended", type: "BEV", battery: 64.0, range: 520, standard: "WLTP" },
-                // Mini
-                { brand: "Mini", model: "Cooper SE (2025)", type: "BEV", battery: 54.2, range: 402, standard: "WLTP" },
-                // Omoda
-                { brand: "Omoda", model: "C5 EV", type: "BEV", battery: 61.0, range: 450, standard: "WLTP" },
-                // Porsche
-                { brand: "Porsche", model: "Taycan 2025", type: "BEV", battery: 105.0, range: 678, standard: "WLTP" },
-                { brand: "Porsche", model: "Macan Electric", type: "BEV", battery: 100.0, range: 613, standard: "WLTP" },
-                // Ram
-                { brand: "Ram", model: "1500 REV", type: "BEV", battery: 229.0, range: 805, standard: "EPA" },
-                // Renault
-                { brand: "Renault", model: "Kwid E-Tech", type: "BEV", battery: 26.8, range: 298, standard: "NEDC" },
-                { brand: "Renault", model: "Megane E-Tech", type: "BEV", battery: 60.0, range: 450, standard: "WLTP" },
-                // SEV
-                { brand: "SEV", model: "E-Wan Cross Bold", type: "BEV", battery: 30.6, range: 300, standard: "NEDC" },
-                { brand: "SEV", model: "Friday", type: "BEV", battery: 85.9, range: 630, standard: "NEDC" },
-                // Tesla
-                { brand: "Tesla", model: "Model 3 RWD", type: "BEV", battery: 60.0, range: 513, standard: "WLTP" },
-                { brand: "Tesla", model: "Model Y Long Range", type: "BEV", battery: 81.0, range: 533, standard: "WLTP" },
-                { brand: "Tesla", model: "Model S Plaid", type: "BEV", battery: 100.0, range: 634, standard: "WLTP" },
-                // Toyota
-                { brand: "Toyota", model: "bZ4X", type: "BEV", battery: 71.4, range: 500, standard: "WLTP" },
-                // Volkswagen
-                { brand: "Volkswagen", model: "ID.4", type: "BEV", battery: 77.0, range: 522, standard: "WLTP" },
-                { brand: "Volkswagen", model: "ID. Buzz", type: "BEV", battery: 77.0, range: 423, standard: "WLTP" },
-                // Volvo
-                { brand: "Volvo", model: "EX30 Extended", type: "BEV", battery: 69.0, range: 476, standard: "WLTP" },
-                { brand: "Volvo", model: "EX40", type: "BEV", battery: 82.0, range: 570, standard: "WLTP" },
-                // Zeekr
-                { brand: "Zeekr", model: "001", type: "BEV", battery: 100.0, range: 620, standard: "WLTP" },
-                { brand: "Zeekr", model: "X", type: "BEV", battery: 66.0, range: 440, standard: "WLTP" },
-
-                // === PHEV (Híbridos Enchufables) ===
-                { brand: "Alfa Romeo", model: "Tonale PHEV", type: "PHEV", battery: 15.5, range: 60, standard: "WLTP" },
-                { brand: "BMW", model: "330e", type: "PHEV", battery: 12.0, range: 50, standard: "WLTP" },
-                { brand: "BMW", model: "X5 xDrive50e", type: "PHEV", battery: 29.5, range: 101, standard: "WLTP" },
-                { brand: "BYD", model: "Song Plus DM-i", type: "PHEV", battery: 18.3, range: 105, standard: "NEDC" },
-                { brand: "BYD", model: "Song Pro DM-i", type: "PHEV", battery: 18.3, range: 71, standard: "NEDC" },
-                { brand: "BYD", model: "King DM-i", type: "PHEV", battery: 18.3, range: 105, standard: "NEDC" },
-                { brand: "BYD", model: "Shark", type: "PHEV", battery: 29.6, range: 100, standard: "NEDC" },
-                { brand: "Chirey", model: "Tiggo 8 Pro e+", type: "PHEV", battery: 19.2, range: 75, standard: "NEDC" },
-                { brand: "Cupra", model: "Formentor PHEV", type: "PHEV", battery: 12.8, range: 52, standard: "WLTP" },
-                { brand: "Cupra", model: "Terramar PHEV", type: "PHEV", battery: 19.7, range: 100, standard: "WLTP" },
-                { brand: "GWM", model: "Poer 500", type: "PHEV", battery: 37.1, range: 115, standard: "NEDC" },
-                { brand: "Jaecoo", model: "Jaecoo 7 PHEV", type: "PHEV", battery: 18.3, range: 106, standard: "NEDC" },
-                { brand: "Jeep", model: "Wrangler 4xe", type: "PHEV", battery: 17.3, range: 40, standard: "EPA" },
-                { brand: "Jeep", model: "Grand Cherokee 4xe", type: "PHEV", battery: 17.3, range: 40, standard: "EPA" },
-                { brand: "Lexus", model: "NX 450h+", type: "PHEV", battery: 18.1, range: 60, standard: "EPA" },
-                { brand: "Mercedes", model: "GLC 300e", type: "PHEV", battery: 31.2, range: 130, standard: "WLTP" },
-                { brand: "MG", model: "eHS", type: "PHEV", battery: 16.6, range: 52, standard: "WLTP" },
+                { brand: "Tesla", model: "Model 3 RWD", type: "BEV", battery: 60, range: 513, standard: "WLTP" },
+                { brand: "Tesla", model: "Model 3 Long Range", type: "BEV", battery: 75, range: 629, standard: "WLTP" },
+                { brand: "BYD", model: "Seal", type: "BEV", battery: 82, range: 570, standard: "WLTP" },
+                { brand: "BYD", model: "Dolphin", type: "BEV", battery: 45, range: 405, standard: "NEDC" },
+                { brand: "Volkswagen", model: "ID.4 Pro", type: "BEV", battery: 82, range: 423, standard: "WLTP" },
+                { brand: "MG", model: "MG4 Standard", type: "BEV", battery: 51, range: 350, standard: "WLTP" },
+                { brand: "Chevrolet", model: "Bolt EUV", type: "BEV", battery: 65, range: 398, standard: "EPA" },
+                { brand: "Nissan", model: "Leaf e+", type: "BEV", battery: 62, range: 364, standard: "WLTP" },
+                { brand: "JAC", model: "E10X", type: "BEV", battery: 31.4, range: 302, standard: "NEDC" },
                 { brand: "Mitsubishi", model: "Outlander PHEV", type: "PHEV", battery: 20.0, range: 61, standard: "EPA" },
-                { brand: "Ram", model: "1500 Ramcharger", type: "PHEV", battery: 92.0, range: 233, standard: "EPA" }, 
-                { brand: "Toyota", model: "RAV4 Prime", type: "PHEV", battery: 18.1, range: 68, standard: "EPA" },
+                { brand: "Jeep", model: "Wrangler 4xe", type: "PHEV", battery: 17.3, range: 34, standard: "EPA" },
+                { brand: "BYD", model: "Song Plus DM-i", type: "PHEV", battery: 18.3, range: 105, standard: "NEDC" },
+                { brand: "MG", model: "eHS PHEV", type: "PHEV", battery: 16.6, range: 52, standard: "WLTP" },
                 { brand: "Volvo", model: "XC60 Recharge", type: "PHEV", battery: 18.8, range: 81, standard: "WLTP" },
-                { brand: "Volvo", model: "XC90 Recharge", type: "PHEV", battery: 18.8, range: 73, standard: "WLTP" },
             ];
 
             // --- Estados con Persistencia (LocalStorage) ---
+            // Función auxiliar para leer de localStorage
             const loadState = (key, defaultValue) => {
                 const saved = localStorage.getItem(key);
                 if (saved !== null) {
@@ -207,9 +84,6 @@
             const [dailyKm, setDailyKm] = useState(() => loadState('elektron_km', 40));
             const [daysPerWeek, setDaysPerWeek] = useState(() => loadState('elektron_days', 5));
             const [costPerKwh, setCostPerKwh] = useState(() => loadState('elektron_cost', 3.0));
-            const [gasPrice, setGasPrice] = useState(() => loadState('elektron_gas_price', 24.50));
-            const [gasEfficiency, setGasEfficiency] = useState(() => loadState('elektron_gas_efficiency', 10));
-            
             const [logoImage, setLogoImage] = useState(() => loadState('elektron_logo', null));
 
             // --- Efecto para Guardar Automáticamente ---
@@ -218,18 +92,20 @@
             useEffect(() => { localStorage.setItem('elektron_km', JSON.stringify(dailyKm)); }, [dailyKm]);
             useEffect(() => { localStorage.setItem('elektron_days', JSON.stringify(daysPerWeek)); }, [daysPerWeek]);
             useEffect(() => { localStorage.setItem('elektron_cost', JSON.stringify(costPerKwh)); }, [costPerKwh]);
-            useEffect(() => { localStorage.setItem('elektron_gas_price', JSON.stringify(gasPrice)); }, [gasPrice]);
-            useEffect(() => { localStorage.setItem('elektron_gas_efficiency', JSON.stringify(gasEfficiency)); }, [gasEfficiency]);
             
+            // Guardar logo (con precaución de tamaño)
             useEffect(() => { 
                 if (logoImage) localStorage.setItem('elektron_logo', JSON.stringify(logoImage)); 
             }, [logoImage]);
 
+            // --- Lógica del Logo Upload ---
             const handleLogoUpload = (e) => {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onloadend = () => { setLogoImage(reader.result); };
+                    reader.onloadend = () => {
+                        setLogoImage(reader.result);
+                    };
                     reader.readAsDataURL(file);
                 }
             };
@@ -252,7 +128,6 @@
                 let monthlyGasKm = 0;
                 let requiredKwh = 0;
 
-                // 1. Calcular Consumo del Auto Seleccionado
                 if (selectedCar.type === 'BEV') {
                     monthlyElectricKm = totalMonthlyKm;
                     requiredKwh = monthlyElectricKm * realEfficiency;
@@ -267,43 +142,30 @@
                     requiredKwh = (monthlyElectricKm / realRange) * selectedCar.battery;
                 }
 
-                const electricCost = requiredKwh * costPerKwh;
-                // Costo gasolina del propio PHEV si se usa en modo híbrido
-                const phevGasCost = monthlyGasKm > 0 ? (monthlyGasKm / gasEfficiency) * gasPrice : 0;
-                const totalCarCost = electricCost + phevGasCost;
-
-                // 2. Calcular Consumo de un Auto a Gasolina Equivalente
-                const gasCarLitres = totalMonthlyKm / gasEfficiency;
-                const gasCarCost = gasCarLitres * gasPrice;
-
-                // 3. Ahorro
-                const savings = gasCarCost - totalCarCost;
-
                 return {
                     realRange,
                     totalMonthlyKm,
                     monthlyElectricKm,
                     monthlyGasKm,
                     requiredKwh,
-                    electricCost,
-                    phevGasCost,
-                    totalCarCost,
-                    gasCarCost,
-                    savings
+                    estimatedCost: requiredKwh * costPerKwh
                 };
-            }, [selectedCar, dailyKm, daysPerWeek, costPerKwh, gasPrice, gasEfficiency]);
+            }, [selectedCar, dailyKm, daysPerWeek, costPerKwh]);
 
             return (
                 <div className="min-h-screen bg-gray-100 flex flex-col font-sans">
                     
-                    {/* --- HEADER --- */}
+                    {/* --- HEADER ESTILO ELEKTRON --- */}
                     <div className="bg-elektron-dark text-white shadow-lg border-b-4 border-elektron-green">
                         <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+                            
+                            {/* Logo Area */}
                             <div className="flex items-center gap-4">
                                 <div className="relative group">
                                     {logoImage ? (
                                         <div className="bg-white p-2 rounded-lg h-16 w-auto shadow-md overflow-hidden relative">
                                             <img src={logoImage} alt="Logo Empresa" className="h-full object-contain" />
+                                            {/* Hover para cambiar logo */}
                                             <label className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
                                                 <span className="text-xs text-white font-bold">Cambiar</span>
                                                 <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
@@ -336,7 +198,7 @@
                                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                                     <div className="bg-gray-50 px-6 py-3 border-b border-gray-200 flex items-center gap-2">
                                         <Car className="w-5 h-5 text-elektron-green" />
-                                        <h2 className="font-bold text-gray-700">Configuración Vehículo</h2>
+                                        <h2 className="font-bold text-gray-700">Vehículo y Uso</h2>
                                     </div>
                                     
                                     <div className="p-6 space-y-6">
@@ -376,7 +238,7 @@
 
                                         <hr className="border-gray-100" />
 
-                                        {/* Sliders Uso */}
+                                        {/* Sliders */}
                                         <div>
                                             <div className="flex justify-between mb-2">
                                                 <label className="text-sm font-semibold text-gray-600">Distancia Diaria</label>
@@ -408,18 +270,9 @@
                                                 ))}
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
 
-                                {/* TARJETA DE COSTOS */}
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                                     <div className="bg-gray-50 px-6 py-3 border-b border-gray-200 flex items-center gap-2">
-                                        <Settings className="w-5 h-5 text-gray-600" />
-                                        <h2 className="font-bold text-gray-700">Costos Energéticos</h2>
-                                    </div>
-                                    <div className="p-6 space-y-4">
-                                        <div>
-                                            <label className="text-sm font-semibold text-gray-600 mb-1 block">Tarifa Eléctrica ($/kWh)</label>
+                                        <div className="pt-2">
+                                            <label className="text-sm font-semibold text-gray-600 mb-1 block">Costo Electricidad ($/kWh)</label>
                                             <div className="relative">
                                                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">$</div>
                                                 <input 
@@ -430,36 +283,6 @@
                                                 />
                                             </div>
                                         </div>
-                                        
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label className="text-sm font-semibold text-gray-600 mb-1 block">Gasolina ($/Lt)</label>
-                                                <div className="relative">
-                                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">$</div>
-                                                    <input 
-                                                        type="number" step="0.1"
-                                                        value={gasPrice}
-                                                        onChange={(e) => setGasPrice(parseFloat(e.target.value))}
-                                                        className="w-full pl-7 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-elektron-green focus:border-elektron-green block p-2.5 outline-none"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <label className="text-sm font-semibold text-gray-600 mb-1 block">Rendimiento (km/l)</label>
-                                                <div className="relative">
-                                                    <input 
-                                                        type="number" step="0.1"
-                                                        value={gasEfficiency}
-                                                        onChange={(e) => setGasEfficiency(parseFloat(e.target.value))}
-                                                        className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-elektron-green focus:border-elektron-green block p-2.5 outline-none"
-                                                    />
-                                                    <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-xs text-gray-400">vs Auto Gasolina</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <p className="text-xs text-gray-400 italic mt-1">
-                                            *Estos valores se usan para calcular el ahorro comparativo.
-                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -478,23 +301,18 @@
                                         <div className="bg-elektron-dark text-white rounded-2xl shadow-xl overflow-hidden relative p-8">
                                             <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                                                 <div>
-                                                    <h3 className="text-elektron-green font-bold text-sm tracking-wider uppercase mb-1">Costo Operativo Mensual</h3>
+                                                    <h3 className="text-elektron-green font-bold text-sm tracking-wider uppercase mb-1">Consumo Estimado Mensual</h3>
                                                     <div className="flex items-baseline gap-1">
-                                                        <span className="text-6xl font-bold tracking-tight">{formatCurrency(results.totalCarCost)}</span>
-                                                        <span className="text-xl text-gray-400">MXN</span>
+                                                        <span className="text-6xl font-bold tracking-tight">{results.requiredKwh.toFixed(1)}</span>
+                                                        <span className="text-xl text-gray-400">kWh</span>
                                                     </div>
-                                                    <p className="text-gray-400 text-sm mt-2">
-                                                        vs {formatCurrency(results.gasCarCost)} en gasolina
-                                                    </p>
+                                                    <p className="text-gray-400 text-sm mt-2">Basado en un uso de {daysPerWeek} días/semana</p>
                                                 </div>
                                                 
-                                                <div className="bg-elektron-green text-elektron-dark rounded-lg p-4 min-w-[200px] shadow-lg transform md:-translate-y-4">
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <PiggyBank className="w-5 h-5" />
-                                                        <p className="text-xs uppercase font-bold opacity-80">Ahorro Mensual</p>
-                                                    </div>
-                                                    <p className="text-4xl font-extrabold">{formatCurrency(results.savings)}</p>
-                                                    <p className="text-xs mt-1 font-medium opacity-80">¡Tu beneficio económico!</p>
+                                                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 min-w-[180px] border border-white/10">
+                                                    <p className="text-gray-300 text-xs uppercase font-semibold mb-1">Costo Proyectado</p>
+                                                    <p className="text-3xl font-bold text-white">${results.estimatedCost.toFixed(2)}</p>
+                                                    <p className="text-elektron-green text-xs mt-1 font-medium">Pesos Mexicanos (MXN)</p>
                                                 </div>
                                             </div>
                                             
@@ -508,32 +326,32 @@
                                             <div className="bg-white p-4 rounded-xl shadow-sm border-l-4 border-elektron-green">
                                                 <div className="flex items-center gap-2 mb-2 text-elektron-green">
                                                     <Leaf className="w-5 h-5" />
-                                                    <span className="font-bold text-xs uppercase">Energía</span>
+                                                    <span className="font-bold text-xs uppercase">Rango Eléctrico</span>
                                                 </div>
-                                                <p className="text-2xl font-bold text-gray-800">{results.requiredKwh.toFixed(1)} kWh</p>
-                                                <p className="text-xs text-gray-500 mt-1">Consumo eléctrico mes</p>
+                                                <p className="text-2xl font-bold text-gray-800">{results.monthlyElectricKm.toFixed(0)} km</p>
+                                                <p className="text-xs text-gray-500 mt-1">Distancia limpia mensual</p>
                                             </div>
 
-                                            {/* Tarjeta Recorrido */}
-                                            <div className="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-400">
-                                                <div className="flex items-center gap-2 mb-2 text-blue-500">
-                                                    <Car className="w-5 h-5" />
-                                                    <span className="font-bold text-xs uppercase">Recorrido</span>
-                                                </div>
-                                                <p className="text-2xl font-bold text-gray-800">{results.totalMonthlyKm.toFixed(0)} km</p>
-                                                <p className="text-xs text-gray-500 mt-1">Distancia total al mes</p>
-                                            </div>
-
-                                            {/* Tarjeta Gasolina (Condicional PHEV) */}
+                                            {/* Tarjeta Gasolina (Condicional) */}
                                             <div className={`bg-white p-4 rounded-xl shadow-sm border-l-4 ${results.monthlyGasKm > 0 ? 'border-orange-500' : 'border-gray-200'}`}>
                                                 <div className={`flex items-center gap-2 mb-2 ${results.monthlyGasKm > 0 ? 'text-orange-500' : 'text-gray-400'}`}>
                                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                                                    <span className="font-bold text-xs uppercase">Gas Extra</span>
+                                                    <span className="font-bold text-xs uppercase">Gasolina</span>
                                                 </div>
-                                                <p className="text-2xl font-bold text-gray-800">{formatCurrency(results.phevGasCost)}</p>
+                                                <p className="text-2xl font-bold text-gray-800">{results.monthlyGasKm.toFixed(0)} km</p>
                                                 <p className="text-xs text-gray-500 mt-1">
-                                                    {results.monthlyGasKm > 0 ? `Costo por exceder rango EV` : 'Sin consumo extra'}
+                                                    {results.monthlyGasKm > 0 ? 'Excedente (motor térmico)' : 'Sin consumo de gasolina'}
                                                 </p>
+                                            </div>
+
+                                            {/* Cargas */}
+                                            <div className="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-400">
+                                                <div className="flex items-center gap-2 mb-2 text-blue-500">
+                                                    <Zap className="w-5 h-5" />
+                                                    <span className="font-bold text-xs uppercase">Recargas</span>
+                                                </div>
+                                                <p className="text-2xl font-bold text-gray-800">~{(results.requiredKwh / selectedCar.battery).toFixed(1)}</p>
+                                                <p className="text-xs text-gray-500 mt-1">Ciclos completos (0-100%)</p>
                                             </div>
                                         </div>
 
@@ -542,7 +360,7 @@
                                             <div className="mt-1"><Settings className="w-4 h-4" /></div>
                                             <div>
                                                 <p className="font-bold mb-1">Notas del Sistema:</p>
-                                                <p>El "Ahorro Mensual" compara el costo de operar tu EV/PHEV vs un auto de gasolina con rendimiento de {gasEfficiency} km/l y costo de ${gasPrice}/lt. Para PHEVs, el costo operativo incluye la gasolina necesaria si excedes el rango eléctrico diario.</p>
+                                                <p>Cálculo con factor de realismo (85% del rango oficial). Para vehículos PHEV (Híbridos Enchufables), se asume una carga completa diaria; si el recorrido excede la batería, el resto se contabiliza como gasolina y no suma al consumo eléctrico de la red.</p>
                                             </div>
                                         </div>
 
